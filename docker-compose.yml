@@ -1,0 +1,19 @@
+services:
+  db:
+    build: ./database/
+    image: alneoru/data1t_ia:task_02_db
+    container_name: db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+  app :
+    build: ./app/
+    image: alneoru/data1t_ia:task_02_app
+    container_name: app
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
